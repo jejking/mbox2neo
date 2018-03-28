@@ -1,0 +1,11 @@
+{
+  "name": "mbox2neo",
+  "version": "1.0.0",
+  "description": "Utility to build a simple neo4j graph database from mbox files",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "John King",
+  "license": "Apache-2.0"
+}
