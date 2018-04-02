@@ -11,6 +11,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "mailparser": "^2.2.0",
+    "neo4j-driver": "^1.5.3",
     "node-mbox": "^1.0.0"
   }
 }
