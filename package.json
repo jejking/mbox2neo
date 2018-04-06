@@ -4,14 +4,16 @@
   "description": "Utility to build a simple neo4j graph database from mbox files",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "John King",
   "license": "Apache-2.0",
   "dependencies": {
+    "command-line-args": "^5.0.2",
     "mailparser": "^2.2.0",
     "neo4j-driver": "^1.5.3",
-    "node-mbox": "^1.0.0"
+    "node-mbox": "^1.0.0",
+    "rxjs": "^5.5.8"
   }
 }
