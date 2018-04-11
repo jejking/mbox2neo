@@ -6,7 +6,7 @@ const SimpleMail = require('./model/simple-mail');
 const SimpleEmailAddress = require('./model/simple-email-address');
 
 function toSimpleEmailAddresses(address) {
-    if (address) {
+    if (address && address.value) {
         return address.value.map((a) => new SimpleEmailAddress(a.address, a.name))
     } else {
         return undefined;
@@ -25,7 +25,6 @@ function toSimpleMail(mail) {
 }
 
 function toMbox(filename) {
-    
     return new Mbox(fs.createReadStream(filename));
 }
 

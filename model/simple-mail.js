@@ -10,6 +10,22 @@ class SimpleMail {
         this.references = references;
     }
 
+    get textOrEmptyString() {
+        if (typeof this.text === 'undefined') {
+            return '';
+        } else {
+            return this.text;
+        }
+    }
+
+    get subjectOrEmptyString() {
+        if (typeof this.subject === 'undefined') {
+            return '';
+        } else {
+            return this.subject;
+        }
+    }
+
 }
 
 module.exports = SimpleMail;
