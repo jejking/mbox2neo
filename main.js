@@ -11,7 +11,7 @@ const optionDefinitions = [
 const options = commandLineArgs(optionDefinitions);
 
 if (!options.in) {
-    console.error('Please specify in an input directory');
+    console.error('Please specify option "in" -  an input directory from which to load and process mbox files');
     process.exit(1);
 } else {
     console.log(options.in);
