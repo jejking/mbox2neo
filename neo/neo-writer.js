@@ -26,13 +26,10 @@ async function writeMailAddress(tx, simpleEmailAddress) {
 }
 
 async function writeMailName(tx, simpleEmailAddress) {
-
     if (!simpleEmailAddress.name) {
         return Promise.resolve('no name');
     } else {
-        return tx.run(`merge (n:Name {
-            name: {name}
-        })`, {
+        return tx.run(`merge (n:Name {name: {name}})`, {
             name: simpleEmailAddress.name
         });
     }
@@ -53,8 +50,8 @@ async function linkNameAndAddress(tx, simpleEmailAddress) {
 
 async function writeSimpleEmailAddress(tx, simpleEmailAddress) {
     const addressRes = await writeMailAddress(tx, simpleEmailAddress);
-    const nameRes = writeMailName(tx, simpleEmailAddress);
-    return linkNameAndAddress;
+    const nameRes = await writeMailName(tx, simpleEmailAddress);
+    return linkNameAndAddress(tx, simpleEmailAddress);
 }
 
 async function linkAddressToMail(tx, simpleMail, simpleEmailAddress, relationship) {
@@ -72,11 +69,11 @@ async function linkAddressToMail(tx, simpleMail, simpleEmailAddress, relationshi
 async function writeMailTransaction(tx, simpleMail) {
     const bodyRes = await writeMailBody(tx, simpleMail);
     for (const fromAddress of simpleMail.from) {
-        const res = await writeMailAddress(tx, fromAddress);
+        const res = await writeSimpleEmailAddress(tx, fromAddress);
         const res2 = await linkAddressToMail(tx, simpleMail, fromAddress, 'FROM');
     }
     for (const toAddress of simpleMail.to) {
-        const res = await writeMailAddress(tx, toAddress);
+        const res = await writeSimpleEmailAddress(tx, toAddress);
         const res2 = await linkAddressToMail(tx, simpleMail, toAddress, 'TO');
     }
 }
