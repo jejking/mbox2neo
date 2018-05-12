@@ -25,4 +25,9 @@ MATCH (a:Address {address: "john.king@st-johns.oxford.ac.uk"})
 MATCH (n:Name {name: "John King"})
 MERGE (a)-[:HAS_NAME]->(n);
 
+MATCH(m1:Mail {messageId: '<Pine.OSF.4.10.10001031848130.15764-100000@sable.ox.ac.uk>'})
+MATCH(m2:Mail {messageId: '<199804211455.QAA07158@mx03.uni-tuebingen.de>'})
+MERGE (m1)-[:REFERS_TO]->(m2);
+
+
 :commit

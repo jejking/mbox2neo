@@ -66,6 +66,36 @@ async function linkAddressToMail(tx, simpleMail, simpleEmailAddress, relationshi
         });
 }
 
+async function linkInReplyTo(tx, simpleMail) {
+    if (!simpleMail.inReplyTo) {
+        return Promise.resolve('no in reply to relationship to link');
+    } else {
+        return tx.run(
+            `MATCH(from:Mail {messageId: {fromMessageId}})
+             MATCH(to:Mail {messageId: {toMessageId}})
+             MERGE (from)-[:IN_REPLY_TO]->(to);`, {
+                fromMessageId: simpleMail.messageId,
+                toMessageId: simpleMail.inReplyTo
+            }
+        );
+    }
+}
+
+async function linkReferences(tx, simpleMail) {
+    if (!simpleMail.references) {
+        return Promise.resolve('no in references relationship to link');
+    } else {
+        return tx.run(
+            `MATCH(from:Mail {messageId: {fromMessageId}})
+             MATCH(to:Mail {messageId: {toMessageId}})
+             MERGE (from)-[:REFERENCES]->(to);`, {
+                fromMessageId: simpleMail.messageId,
+                toMessageId: simpleMail.references
+            }
+        );
+    }
+}
+
 async function writeMailTransaction(tx, simpleMail) {
     const bodyRes = await writeMailBody(tx, simpleMail);
     for (const fromAddress of simpleMail.from) {
@@ -76,6 +106,8 @@ async function writeMailTransaction(tx, simpleMail) {
         const res = await writeSimpleEmailAddress(tx, toAddress);
         const res2 = await linkAddressToMail(tx, simpleMail, toAddress, 'TO');
     }
+    const inReplyToRes = await linkInReplyTo(tx, simpleMail);
+    const referecesRes = await linkReferences(tx, simpleMail);
 }
 
 function writeMailToNeo(driver, simpleMail) {
