@@ -11,7 +11,7 @@ async function writeMailBody(tx, simpleMail) {
         })`, {
         messageId: simpleMail.messageId,
         subject: simpleMail.subjectOrEmptyString,
-        timestamp: simpleMail.date.valueOf(),
+        timestamp: neo4j.int(simpleMail.date.valueOf()),
         date: simpleMail.date.toISOString(),
         text: simpleMail.textOrEmptyString,
         });

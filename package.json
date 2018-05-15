@@ -4,7 +4,7 @@
   "description": "Utility to build a simple neo4j graph database from mbox files",
   "main": "index.js",
   "scripts": {
-    "start": "node main.js",
+    "load": "node main.js",
     "clear": "node neo/neo-delete.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -5,7 +5,7 @@ const session = driver.session();
 session.run(`MATCH (n)
             DETACH DELETE n`)
             .then(
-                (res) => console.log("deleted all nodes"),
+                (res) => console.log(`deleted all nodes. Summary: ${JSON.stringify(res.summary.counters)}`),
                 (err) => console.error(err.message))
                 .finally(() => {
                     session.close();
