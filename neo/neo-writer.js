@@ -70,7 +70,6 @@ async function linkInReplyTo(tx, simpleMail) {
     if (!simpleMail.inReplyTo) {
         return Promise.resolve('no in reply to relationship to link');
     } else {
-        console.log(`Linking ${simpleMail.messageId} inReplyTo ${simpleMail.inReplyTo}`);
         return tx.run(
             `MERGE(from:Mail {messageId: {fromMessageId}})
              MERGE(to:Mail {messageId: {toMessageId}})
