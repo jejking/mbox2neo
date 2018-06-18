@@ -25,3 +25,13 @@ file.toFilenamesObservable(options.in)
         neowriter.driver.close();
         console.log('done')
     });
+
+
+// file.toFilenamesObservable(options.in)
+//     .flatMap(mbox.fileNameToSimpleMailObservable)
+//     .filter((sm) => typeof sm.messageId !== 'undefined')
+//     .filter((sm) => sm.messageId === '<199912032054.VAA08364@maria.ctv.es>')
+//     .subscribe(f => console.log(f.withoutText()), err => console.error(err.message), () => {
+//         //neowriter.driver.close();
+//         console.log('done');
+//     });

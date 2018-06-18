@@ -2,13 +2,13 @@ const neo4j = require('neo4j-driver').v1;
 const driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "neo4j"));
 
 async function writeMailBody(tx, simpleMail) {
-    return tx.run(`merge (m:Mail { 
-        messageId: {messageId},
-        subject: {subject},
-        timestamp: {timestamp},
-        date: {date},
-        text: {text}
-        })`, {
+    return tx.run(`MERGE (m:Mail { 
+        messageId: {messageId}})
+        with m
+        set m.subject = {subject}
+        set m.timestamp = {timestamp}
+        set m.date = {date}
+        set m.text = {text}`, {
         messageId: simpleMail.messageId,
         subject: simpleMail.subjectOrEmptyString,
         timestamp: neo4j.int(simpleMail.date.valueOf()),
@@ -18,7 +18,7 @@ async function writeMailBody(tx, simpleMail) {
 }
 
 async function writeMailAddress(tx, simpleEmailAddress) {
-    return tx.run(`merge (a:Address {
+    return tx.run(`MERGE (a:Address {
         address: {address}
     })`, {
         address: simpleEmailAddress.address
@@ -29,7 +29,7 @@ async function writeMailName(tx, simpleEmailAddress) {
     if (!simpleEmailAddress.name) {
         return Promise.resolve('no name');
     } else {
-        return tx.run(`merge (n:Name {name: {name}})`, {
+        return tx.run(`MERGE (n:Name {name: {name}})`, {
             name: simpleEmailAddress.name
         });
     }
@@ -39,8 +39,8 @@ async function linkNameAndAddress(tx, simpleEmailAddress) {
     if (!simpleEmailAddress.name) {
         return Promise.resolve('no name to link');
     } else {
-        return tx.run(`MATCH (a:Address {address: {address}})
-                   MATCH (n:Name {name: {name}})
+        return tx.run(`MERGE (a:Address {address: {address}})
+                   MERGE (n:Name {name: {name}})
                    MERGE (a)-[:HAS_NAME]->(n)`, {
                        address: simpleEmailAddress.address,
                        name: simpleEmailAddress.name
@@ -57,8 +57,8 @@ async function writeSimpleEmailAddress(tx, simpleEmailAddress) {
 async function linkAddressToMail(tx, simpleMail, simpleEmailAddress, relationship) {
     const mergeString = `MERGE (m)-[:${relationship}]->(a)`;
     return tx.run(
-        `MATCH (m:Mail {messageId: {messageId} })
-        MATCH (a:Address {address: {address}})
+        `MERGE (m:Mail {messageId: {messageId} })
+        MERGE (a:Address {address: {address}})
         ${mergeString}`, {
             messageId: simpleMail.messageId,
             address: simpleEmailAddress.address,
@@ -70,9 +70,10 @@ async function linkInReplyTo(tx, simpleMail) {
     if (!simpleMail.inReplyTo) {
         return Promise.resolve('no in reply to relationship to link');
     } else {
+        console.log(`Linking ${simpleMail.messageId} inReplyTo ${simpleMail.inReplyTo}`);
         return tx.run(
-            `MATCH(from:Mail {messageId: {fromMessageId}})
-             MATCH(to:Mail {messageId: {toMessageId}})
+            `MERGE(from:Mail {messageId: {fromMessageId}})
+             MERGE(to:Mail {messageId: {toMessageId}})
              MERGE (from)-[:IN_REPLY_TO]->(to);`, {
                 fromMessageId: simpleMail.messageId,
                 toMessageId: simpleMail.inReplyTo
@@ -86,8 +87,8 @@ async function linkReferences(tx, simpleMail) {
         return Promise.resolve('no in references relationship to link');
     } else {
         return tx.run(
-            `MATCH(from:Mail {messageId: {fromMessageId}})
-             MATCH(to:Mail {messageId: {toMessageId}})
+            `MERGE(from:Mail {messageId: {fromMessageId}})
+             MERGE(to:Mail {messageId: {toMessageId}})
              MERGE (from)-[:REFERENCES]->(to);`, {
                 fromMessageId: simpleMail.messageId,
                 toMessageId: simpleMail.references

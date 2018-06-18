@@ -10,6 +10,16 @@ class SimpleMail {
         this.references = references;
     }
 
+    withoutText() {
+        return {messageId: this.messageId, 
+               subject: this.subject,
+               date: this.date,
+               from: this.from,
+               to: this.to,
+               inReplyTo: this.inReplyTo, 
+               references: this.references};    
+    }
+
     get textOrEmptyString() {
         if (typeof this.text === 'undefined') {
             return '';
